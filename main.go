@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"os"
 
 	_ "github.com/go-sql-driver/mysql"
 
@@ -23,11 +24,11 @@ func main() {
 
 	r.Mount("/persona", persona.MakeHTTPSHandler(personaServicio))
 
-	//PORT := os.Getenv("PORT")
-	//if PORT == "" {
-	//	PORT = "8080"
-	//}
+	PORT := os.Getenv("PORT")
+	if PORT == "" {
+		PORT = "8080"
+	}
 
-	http.ListenAndServe(":3000", r)
+	http.ListenAndServe(":"+PORT, r)
 
 }
