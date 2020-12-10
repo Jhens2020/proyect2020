@@ -2,7 +2,6 @@ package persona
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/go-kit/kit/endpoint"
 )
@@ -15,6 +14,9 @@ type addPersonaRequest struct {
 	Dni             string
 	FechaNacimiento string
 }
+type getPersonaByIDRequest struct {
+	ID int
+}
 
 /* Permite mostrar json body*/
 func makeAddPersonEndpoint(service Service) endpoint.Endpoint {
@@ -24,14 +26,19 @@ func makeAddPersonEndpoint(service Service) endpoint.Endpoint {
 		rep := request.(addPersonaRequest)
 		result, err := service.InsertPersona(&rep)
 
-		fmt.Println(rep.Nombre)
-		fmt.Println(rep.ApellidoPat)
-		fmt.Println(rep.ApellidoMat)
-		fmt.Println(rep.Genero)
-		fmt.Println(rep.Dni)
-		fmt.Println(rep.FechaNacimiento)
-
 		return result, err
 	}
 	return addPersonEndpoint
+}
+
+func makeGetPersonaByIDEndPoint(service Service) endpoint.Endpoint {
+	getPersonaBy := func(ctx context.Context, request interface{}) (interface{}, error) {
+		// req := request.(addPersonaRequest)
+		// persona_id, err := s.InsertPerson(&req)
+		rep := request.(getPersonaByIDRequest)
+		result, err := service.ObtenerPersonaPorID(&rep)
+
+		return result, err
+	}
+	return getPersonaBy
 }

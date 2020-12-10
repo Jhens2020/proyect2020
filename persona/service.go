@@ -5,6 +5,7 @@ import "strconv"
 /*Service interface para los sercicios*/
 type Service interface {
 	InsertPersona(persona *addPersonaRequest) (interface{}, error)
+	ObtenerPersonaPorID(param *getPersonaByIDRequest) (*Persona, error)
 }
 
 type service struct {
@@ -25,4 +26,12 @@ func (service *service) InsertPersona(persona *addPersonaRequest) (interface{}, 
 	mensaje := "Persona registrada con el id " + strconv.Itoa(result)
 
 	return map[string]string{"mensaje": mensaje}, nil
+}
+
+func (service *service) ObtenerPersonaPorID(param *getPersonaByIDRequest) (*Persona, error) {
+	result, err := service.repo.ObtenerPersonaPorID(param)
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
 }

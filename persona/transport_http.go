@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"strconv"
 
 	"github.com/go-chi/chi"
 	kithttp "github.com/go-kit/kit/transport/http"
@@ -21,6 +22,14 @@ func MakeHTTPSHandler(service Service) http.Handler {
 	)
 	r.Method(http.MethodPost, "/", addPersonHandler)
 
+	//Buscar a una persona por ID
+	getPersonaByIDHandler := kithttp.NewServer(
+		makeGetPersonaByIDEndPoint(service),
+		getPersonaByIDRequestDecoder,
+		kithttp.EncodeJSONResponse,
+	)
+	r.Method(http.MethodGet, "/{id}", getPersonaByIDHandler)
+
 	return r
 }
 
@@ -28,5 +37,13 @@ func addPersonRequestDecoder(context context.Context, r *http.Request) (interfac
 	request := addPersonaRequest{}
 	err := json.NewDecoder(r.Body).Decode(&request)
 
+	return request, err
+}
+
+func getPersonaByIDRequestDecoder(context context.Context, r *http.Request) (interface{}, error) {
+	personaID, err := strconv.Atoi(chi.URLParam(r, "id"))
+	request := getPersonaByIDRequest{
+		ID: personaID,
+	}
 	return request, err
 }
