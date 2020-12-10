@@ -6,6 +6,7 @@ import "database/sql"
 type Repository interface {
 	InsertPersona(persona *addPersonaRequest) (int, error)
 	ObtenerPersonaPorID(param *getPersonaByIDRequest) (*Persona, error)
+	ObtenerPersonaPorDNI(param *getPersonaByDNIRequest) (*Persona, error)
 }
 
 type repository struct {
@@ -31,5 +32,14 @@ func (repositorysegundo *repository) ObtenerPersonaPorID(param *getPersonaByIDRe
 
 	persona := &Persona{}
 	err := result.Scan(&persona.ID, &persona.Nombre, &persona.ApellidoPat, &persona.ApellidoMat, &persona.Genero, &persona.DNI, &persona.FechaNacimiento)
+	return persona, err
+}
+
+func (repositorysegundo *repository) ObtenerPersonaPorDNI(param *getPersonaByDNIRequest) (*Persona, error) {
+	const queryStr = `SELECT PERSONA_ID, NOMBRE, APELLIDO_P, APELLIDO_M, GENERO, DNI, FECHA_NACIMIENTO FROM PERSONA where DNI= ? and ESTADO=1`
+	result := repositorysegundo.db.QueryRow(queryStr, param.DNI)
+
+	persona := &Persona{}
+	err := result.Scan(&persona.DNI, &persona.Nombre, &persona.ApellidoPat, &persona.ApellidoMat, &persona.Genero, &persona.DNI, &persona.FechaNacimiento)
 	return persona, err
 }

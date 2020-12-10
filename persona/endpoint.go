@@ -17,6 +17,9 @@ type addPersonaRequest struct {
 type getPersonaByIDRequest struct {
 	ID int
 }
+type getPersonaByDNIRequest struct {
+	DNI string
+}
 
 /* Permite mostrar json body*/
 func makeAddPersonEndpoint(service Service) endpoint.Endpoint {
@@ -32,7 +35,7 @@ func makeAddPersonEndpoint(service Service) endpoint.Endpoint {
 }
 
 func makeGetPersonaByIDEndPoint(service Service) endpoint.Endpoint {
-	getPersonaBy := func(ctx context.Context, request interface{}) (interface{}, error) {
+	getPersonaByID := func(ctx context.Context, request interface{}) (interface{}, error) {
 		// req := request.(addPersonaRequest)
 		// persona_id, err := s.InsertPerson(&req)
 		rep := request.(getPersonaByIDRequest)
@@ -40,5 +43,17 @@ func makeGetPersonaByIDEndPoint(service Service) endpoint.Endpoint {
 
 		return result, err
 	}
-	return getPersonaBy
+	return getPersonaByID
+}
+
+func makeGetPersonaByDNIEndPoint(service Service) endpoint.Endpoint {
+	GetPersonaByDNI := func(ctx context.Context, request interface{}) (interface{}, error) {
+		// req := request.(addPersonaRequest)
+		// persona_id, err := s.InsertPerson(&req)
+		rep := request.(getPersonaByDNIRequest)
+		result, err := service.ObtenerPersonaPorDNI(&rep)
+
+		return result, err
+	}
+	return GetPersonaByDNI
 }

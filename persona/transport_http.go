@@ -28,7 +28,15 @@ func MakeHTTPSHandler(service Service) http.Handler {
 		getPersonaByIDRequestDecoder,
 		kithttp.EncodeJSONResponse,
 	)
-	r.Method(http.MethodGet, "/{id}", getPersonaByIDHandler)
+	r.Method(http.MethodGet, "/id/{id}", getPersonaByIDHandler)
+
+	//Buscar a una persona por DNI
+	getPersonaByDNIHandler := kithttp.NewServer(
+		makeGetPersonaByDNIEndPoint(service),
+		getPersonaByDNIRequestDecoder,
+		kithttp.EncodeJSONResponse,
+	)
+	r.Method(http.MethodGet, "/dni/{dni}", getPersonaByDNIHandler)
 
 	return r
 }
@@ -46,4 +54,12 @@ func getPersonaByIDRequestDecoder(context context.Context, r *http.Request) (int
 		ID: personaID,
 	}
 	return request, err
+}
+
+func getPersonaByDNIRequestDecoder(context context.Context, r *http.Request) (interface{}, error) {
+	personaDNI := (chi.URLParam(r, "dni"))
+	request := getPersonaByDNIRequest{
+		DNI: personaDNI,
+	}
+	return request, nil
 }

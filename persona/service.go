@@ -6,6 +6,7 @@ import "strconv"
 type Service interface {
 	InsertPersona(persona *addPersonaRequest) (interface{}, error)
 	ObtenerPersonaPorID(param *getPersonaByIDRequest) (*Persona, error)
+	ObtenerPersonaPorDNI(param *getPersonaByDNIRequest) (*Persona, error)
 }
 
 type service struct {
@@ -30,6 +31,14 @@ func (service *service) InsertPersona(persona *addPersonaRequest) (interface{}, 
 
 func (service *service) ObtenerPersonaPorID(param *getPersonaByIDRequest) (*Persona, error) {
 	result, err := service.repo.ObtenerPersonaPorID(param)
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
+}
+
+func (service *service) ObtenerPersonaPorDNI(param *getPersonaByDNIRequest) (*Persona, error) {
+	result, err := service.repo.ObtenerPersonaPorDNI(param)
 	if err != nil {
 		return nil, err
 	}
