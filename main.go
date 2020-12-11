@@ -7,7 +7,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 
 	"github.com/Jhens2020/proyect2020/database"
-	"github.com/Jhens2020/proyect2020/persona"
+	"github.com/Jhens2020/proyect2020/handlers"
 	"github.com/go-chi/chi"
 )
 
@@ -15,14 +15,9 @@ func main() {
 	db := database.InitDB()
 
 	defer db.Close()
-	var personaRepository = persona.NewRepository(db)
-	var personaServicio = persona.NewService(personaRepository)
-
 	r := chi.NewRouter()
-
-	//r.Use(helper.GetCors().Handler)*/
-
-	r.Mount("/persona", persona.MakeHTTPSHandler(personaServicio))
+	r.Mount("/v1", handlers.MakeHTTPSHandlerV1(db))
+	r.Mount("/v2", handlers.MakeHTTPSHandlerV2(db))
 
 	PORT := os.Getenv("PORT")
 	if PORT == "" {
